@@ -16,7 +16,7 @@
 
 Для установки необходимо скачать библиотеку и установить cmake (для запуска примеров и тестов)
 ```
-git clone https://github.com/ByMisterAnt/SimulinkBlocksLibrary.git
+git clone --recurse-submodules https://github.com/ByMisterAnt/SimulinkBlocksLibrary.git
 ```
 Ubuntu:
 ```
