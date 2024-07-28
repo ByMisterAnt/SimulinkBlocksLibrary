@@ -12,6 +12,21 @@
 * Random Number
 * Saturation
 
+## Установка
+
+Для установки необходимо скачать библиотеку и установить cmake (для запуска примеров и тестов)
+```
+git clone https://github.com/ByMisterAnt/SimulinkBlocksLibrary.git
+```
+Ubuntu:
+```
+sudo apt install cmake
+```
+Arch Linux:
+```
+sudo pacman -S cmake
+```
+
 ## Подключение библиотеки
 
 Для работы с библиотекой достаточно подключить заголовочный файл SimulinkBlocksLibrary.hpp из дирректории include/
