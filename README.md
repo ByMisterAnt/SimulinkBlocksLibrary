@@ -20,7 +20,7 @@ git clone --recurse-submodules https://github.com/ByMisterAnt/SimulinkBlocksLibr
 ```
 Ubuntu:
 ```
-sudo apt install cmake
+sudo apt install cmake libgmock-dev libgtest-dev
 ```
 Arch Linux:
 ```
