@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/SimulinkBlocksLibrary.hpp"
+#include "../../include/SimulinkBlocksLibrary.hpp"
 
 
 using namespace SimulinkBlock;
