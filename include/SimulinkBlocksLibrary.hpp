@@ -4,6 +4,8 @@
 #include <vector>
 #include <random>
 
+#include "Utils.hpp"
+
 #include "IntegratorBlock.hpp"
 #include "DerivativeBlock.hpp"
 #include "LookupTable1D.hpp"
@@ -13,6 +15,9 @@
 #include "SaturationBlock.hpp"
 #include "SineWaveGenerator.hpp"
 #include "RateLimiter.hpp"
+
+#include "Flightgear/FlightGearReceiver.hpp"
+#include "Flightgear/SendUdp.hpp"
 
 namespace SimulinkBlock
 {
