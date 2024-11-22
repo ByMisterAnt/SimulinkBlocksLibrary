@@ -22,7 +22,7 @@ git clone --recurse-submodules https://github.com/ByMisterAnt/SimulinkBlocksLibr
 ```
 Ubuntu:
 ```
-sudo apt install cmake libgmock-dev libgtest-dev libboost-all-dev.
+sudo apt install cmake libgmock-dev libgtest-dev libboost-all-dev
 ```
 Arch Linux:
 ```
