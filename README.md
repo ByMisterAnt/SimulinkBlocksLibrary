@@ -13,6 +13,7 @@ Header-only библиотека, реализующая логику работ
 * Saturation
 * UDP Send (Pack net_fdm / net_ctrls Packet for FlightGear)
 * UDP Receive (Receive net_fdm / net_ctrls Packet for FlightGear)
+* PID
 
 ## Установка
 
