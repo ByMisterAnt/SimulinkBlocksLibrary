@@ -2,6 +2,7 @@
 
 #include <array>
 #include <algorithm>
+#include <mutex>
 
 
 namespace SimulinkBlock
@@ -16,6 +17,7 @@ template <typename T, std::size_t N>
 class LookupTable1D
 {
 private:
+    std::mutex mtx;                //!< Мьютекс для блокировки одновременного доступа к переменным класса
     std::array<T, N> tableInputs;  //!< Входные значения таблицы
     std::array<T, N> tableOutputs; //!< Выходные значения таблицы
     T output = T(0);               //!< Значение, экстраполированное из таблицы
@@ -37,6 +39,7 @@ public:
      */
     void interpolate(const T& inputValue)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         if (inputValue < tableInputs.front() || inputValue > tableInputs.back())
         {
             // Значение находится за пределами таблицы, поэтому экстраполировать
@@ -64,6 +67,28 @@ public:
             output = y0 + (y1 - y0) * (inputValue - x0) / (x1 - x0);
         }
     }
+
+    /**
+     * @brief Ссылка на текущее состояние блока интегрирования
+     *
+     * @return Указатель на текущее значение, экстраполированное из таблицы
+     */
+    const T& getOutput()
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        return output;
+    }
+
+    /**
+     * @brief Обнулить текущий выход блока
+     */
+    void reset()
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        output = T(0);
+    }
+
+private:
 
     /**
      * @brief Экстраполяция значения на основе входного значения
@@ -94,24 +119,6 @@ public:
             // Значение находится в пределах таблицы, поэтому интерполировать
             interpolate(inputValue);
         }
-    }
-
-    /**
-     * @brief Получить указатель на текущее состояние блока интегрирования
-     *
-     * @return Указатель на текущее значение, экстраполированное из таблицы
-     */
-    const T& getOutput() const
-    {
-        return output;
-    }
-
-    /**
-     * @brief Обнулить текущий выход блока
-     */
-    void reset()
-    {
-        output = T(0);
     }
 };
 }

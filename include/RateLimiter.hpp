@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <stdexcept>
 
 
@@ -13,7 +14,8 @@ namespace SimulinkBlock
 template <typename T>
 class RateLimiter {
 private:
-    T risingLimit; //!< Предел увеличения
+    std::mutex mtx; //!< Мьютекс для блокировки одновременного доступа к переменным класса
+    T risingLimit;  //!< Предел увеличения
     T fallingLimit; //!< Предел уменьшения
     T state = T(0); //!< Текущее состояние
 
@@ -30,6 +32,7 @@ public:
     {
         if(fallingLimit > risingLimit)
         {
+            std::swap(risingLimit, fallingLimit);
             throw std::invalid_argument("Min value should not be greater than max value");
         }
     }
@@ -41,6 +44,7 @@ public:
      */
     void step(const T& input, const T& dt)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         // Скорость изменения сигнала
         T rate = input - state;
 
@@ -67,16 +71,18 @@ public:
      */
     void setState(const T& newState)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         state = newState;
     }
 
     /**
-     * @brief Получить указатель на текущее состояние блока
+     * @brief Ссылка на текущее состояние блока
      *
      * @return Указатель на текущее состояние
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return state;
     }
 
@@ -85,6 +91,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         state = T(0);
     }
 };

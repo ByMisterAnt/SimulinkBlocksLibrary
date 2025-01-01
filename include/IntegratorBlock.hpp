@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <mutex>
 #include <stdexcept>
 
 
@@ -15,9 +16,10 @@ template <typename T>
 class IntegratorBlock
 {
 private:
-    T state; //!< Состояние блока интегрирования
-    T minLimit; //!< Минимальный предел интегрирования
-    T maxLimit; //!< Максимальный предел интегрирования
+    std::mutex mtx; //!< Мьютекс для блокировки одновременного доступа к переменным класса
+    T state;        //!< Состояние блока интегрирования
+    T minLimit;     //!< Минимальный предел интегрирования
+    T maxLimit;     //!< Максимальный предел интегрирования
 
 public:
     /**
@@ -33,8 +35,10 @@ public:
           maxLimit{max},
           state{T(0)}
     {
+        std::lock_guard<std::mutex> lock(mtx);
         if(min > max)
         {
+            std::swap(minLimit, maxLimit);
             throw std::invalid_argument("Min value should not be greater than max value");
         }
     }
@@ -47,9 +51,12 @@ public:
      */
     void setLimits(const T& min, const T& max)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         if(min > max)
         {
+            std::swap(maxLimit, minLimit);
             throw std::invalid_argument("Min value should not be greater than max value");
+            return;
         }
         minLimit = min;
         maxLimit = max;
@@ -63,6 +70,7 @@ public:
      */
     void step(const T& input, const T& dt)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         // Ограничиваем результат интегрирования
         T result = state + input * dt;
         state = std::clamp(result, minLimit, maxLimit);
@@ -75,16 +83,18 @@ public:
      */
     void setState(const T& newState)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         state = newState;
     }
 
     /**
-     * @brief Получить указатель на текущее состояние блока интегрирования
+     * @brief Ссылка на текущее состояние блока интегрирования
      *
-     * @return Указатель на текущее состояние
+     * @return Ссылка на текущее состояние
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return state;
     }
 
@@ -93,6 +103,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         state = T(0);
     }
 };

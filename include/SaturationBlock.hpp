@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <mutex>
 #include <stdexcept>
 
 namespace SimulinkBlock
@@ -14,6 +15,7 @@ template <typename T>
 class SaturationBlock
 {
 private:
+    std::mutex mtx;  //!< Мьютекс для блокировки одновременного доступа к переменным класса
     T output = T(0); //!< Выход блока насыщения
     T minLimit;      //!< Минимальный предел насыщения
     T maxLimit;      //!< Максимальный предел насыщения
@@ -40,6 +42,7 @@ public:
      */
     void step(const T& input)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         if ( input > maxLimit)
             output = maxLimit;
         else if ( input < minLimit)
@@ -56,21 +59,25 @@ public:
      */
     void setLimits(const T& min, const T& max)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         if(min > max)
         {
+            std::swap(maxLimit, minLimit);
             throw std::invalid_argument("Min value should not be greater than max value");
+            return;
         }
         minLimit = min;
         maxLimit = max;
     }
 
     /**
-     * @brief Получить указатель на текущее состояние блока насыщения
+     * @brief Ссылка на текущее состояние блока насыщения
      *
      * @return Указатель на сигнал с учётом ограничений
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return output;
     }
 
@@ -79,6 +86,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         output = T(0);
     }
 };

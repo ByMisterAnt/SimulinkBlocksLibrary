@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 namespace SimulinkBlock
 {
 /**
@@ -12,6 +13,7 @@ template <typename T, typename U>
 class TriggeredSubsystem
 {
 private:
+    std::mutex mtx;         //!< Мьютекс для блокировки одновременного доступа к переменным класса
     T output        = T(0); //!< Внешний выход
     U prev_state    = U(0); //!< Предыдущие состояния нулевых переходов (триггер)
 
@@ -24,6 +26,7 @@ public:
      */
     void step(const T& input, const U& trigger_input)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         // Проверка условия триггера и предыдущего состояния нулевого перехода
         if ( trigger_input && ( prev_state != static_cast<T>(1) ) )
         {
@@ -40,8 +43,9 @@ public:
      *
      * @return Указатель на выходные данные
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return output;
     }
 
@@ -50,6 +54,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         prev_state = T(0);
         output     = U(0);
     }

@@ -30,6 +30,9 @@ public:
          */
     void send(const T &data)
     {
+        static std::mutex mtx;
+        std::lock_guard<std::mutex> lock(mtx);
+
         std::array<char, sizeof(T)> buffer;
         std::memcpy(&buffer, &data, sizeof(T));
         socket.send_to(boost::asio::buffer(buffer), server_endpoint);

@@ -15,30 +15,8 @@
 #include "SaturationBlock.hpp"
 #include "SineWaveGenerator.hpp"
 #include "RateLimiter.hpp"
+#include "PID.hpp"
 
 #include "Flightgear/FlightGearReceiver.hpp"
 #include "Flightgear/SendUdp.hpp"
 
-namespace SimulinkBlock
-{
-/**
- * @brief Функция, реализующая логику работы блока насыщения
- * @param input Входной сигнал
- * @param upperLimit Верхняя граница ограничения значения
- * @param lowerLimit Нижняя граница ограничения значения
- *
- * @return Сигнал с учётом ограничений
- */
-template <typename T>
-const T& saturation(const T& input,
-                    const T& upperLimit,
-                    const T& lowerLimit)
-{
-    if ( input > upperLimit)
-        return upperLimit;
-    else if ( input < lowerLimit)
-        return lowerLimit;
-    else
-        return input;
-}
-}

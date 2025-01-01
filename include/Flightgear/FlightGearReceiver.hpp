@@ -52,7 +52,7 @@ public:
     }
 
     /**
-     * @brief Получить указатель на текущее состояние блока
+     * @brief Ссылка на текущее состояние блока
      *
      * @return Указатель на структуру данных содержимого
      * получаемого пакета net_ctrl
@@ -79,6 +79,7 @@ public:
      */
     void start()
     {
+        std::lock_guard<std::mutex> lock(dataMutex);
         thread_ = std::thread([this] { ioContext.run(); });
         receiveData();
     }
@@ -88,6 +89,7 @@ public:
      */
     void stop()
     {
+        std::lock_guard<std::mutex> lock(dataMutex);
         ioContext.stop();
         if (thread_.joinable()) {
             thread_.join();

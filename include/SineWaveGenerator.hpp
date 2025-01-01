@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <mutex>
 
 namespace SimulinkBlock
 {
@@ -14,6 +15,7 @@ template <typename T, typename U>
 class SineWaveGenerator
 {
 private:
+    std::mutex mtx;  //!< Мьютекс для блокировки одновременного доступа к переменным класса
     U amplitude;     //!< Амплитуда синусоиды
     U frequency;     //!< Частота синусоиды
     U phase;         //!< Сдвиг фазы синусоиды
@@ -39,6 +41,7 @@ public:
     */
     void step(U time)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         output = static_cast<T>(amplitude * sin(2 * M_PI * frequency * time + phase));
     }
 
@@ -51,6 +54,7 @@ public:
     */
     void setup(U amp, U freq, U ph)
     {
+        std::lock_guard<std::mutex> lock(mtx);
         amplitude = amp;
         frequency = freq;
         phase     = ph;
@@ -61,8 +65,9 @@ public:
      *
      * @return Указатель на выходные данные
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return output;
     }
 
@@ -71,6 +76,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         amplitude = U(1);
         frequency = U(1);
         phase     = U(0);
