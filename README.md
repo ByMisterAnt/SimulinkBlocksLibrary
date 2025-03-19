@@ -24,7 +24,7 @@ sudo apt install cmake libgmock-dev libgtest-dev
 ```
 Arch Linux:
 ```
-sudo pacman -S cmake
+sudo pacman -S cmake gtest
 ```
 
 ## Подключение библиотеки
