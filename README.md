@@ -27,7 +27,9 @@ sudo apt install cmake libgmock-dev libgtest-dev libboost-all-dev
 ```
 Arch Linux:
 ```
-sudo pacman -S cmake boost
+
+sudo pacman -S cmake boost gtest
+
 ```
 
 ## Подключение библиотеки
