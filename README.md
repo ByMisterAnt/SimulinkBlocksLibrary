@@ -1,6 +1,6 @@
 # SimulinkBlocks
 
-Легковесная Header-only библиотека, реализующая логику работы некоторых блоков, используемых в Simulink/Scilab. 
+Header-only библиотека, реализующая логику работы некоторых блоков, используемых в Simulink/Scilab. 
 В настоящее время готовы блоки:
 * Lookup Table 1-D
 * Integrator
@@ -11,6 +11,9 @@
 * Triggered Subsystem
 * Random Number
 * Saturation
+* UDP Send (Pack net_fdm / net_ctrls Packet for FlightGear)
+* UDP Receive (Receive net_fdm / net_ctrls Packet for FlightGear)
+* PID
 
 ## Установка
 
@@ -20,11 +23,13 @@ git clone --recurse-submodules https://github.com/ByMisterAnt/SimulinkBlocksLibr
 ```
 Ubuntu:
 ```
-sudo apt install cmake libgmock-dev libgtest-dev
+sudo apt install cmake libgmock-dev libgtest-dev libboost-all-dev
 ```
 Arch Linux:
 ```
-sudo pacman -S cmake gtest
+
+sudo pacman -S cmake boost gtest
+
 ```
 
 ## Подключение библиотеки

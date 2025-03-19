@@ -36,7 +36,8 @@ add_executable(SimulinkLibraryTests main.cpp
     tst_sinewavegenerator.cpp
     tst_triggeredsystem.cpp
     tst_whitenoize.cpp
-    tst_saturation.cpp)
+    tst_saturation.cpp
+    tst_pid.cpp)
 
 add_test(NAME SimulinkLibraryTests COMMAND SimulinkLibraryTests)
 

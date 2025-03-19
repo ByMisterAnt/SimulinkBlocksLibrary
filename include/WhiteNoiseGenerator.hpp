@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <random>
 
 
@@ -12,6 +13,7 @@ template <typename T>
 class WhiteNoiseGenerator
 {
 private:
+    std::mutex mtx;                           //!< Мьютекс для блокировки одновременного доступа к переменным класса
     std::mt19937 generator;                   //!< Генератор случайных чисел Mersenne Twister
     std::normal_distribution<T> distribution; //!< Нормальное распределение для генерации белого шума
     T output = T(0);                          //!< Переменная для хранения сгенерированного значения белого шума
@@ -31,6 +33,7 @@ public:
      */
     void step()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         output = distribution(generator);
     }
 
@@ -39,8 +42,9 @@ public:
      *
      * @return Указатель на выходные данные
      */
-    const T& getOutput() const
+    const T& getOutput()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         return output;
     }
 
@@ -49,6 +53,7 @@ public:
      */
     void reset()
     {
+        std::lock_guard<std::mutex> lock(mtx);
         output = T(0);
     }
 };
