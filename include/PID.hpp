@@ -65,7 +65,7 @@ public:
      * @param I Коэффициент усиления для интегрирующей составляющей
      * @param D Коэффициент усиления для дифференцирующей составляющей
      */
-    void setCoeffs(const T &&p, const T &&i, const T &&d)
+    void setCoeffs(const T &p, const T &i, const T &d)
     {
         std::lock_guard<std::mutex> lock(mtx);
         P = p;
