@@ -46,14 +46,14 @@ TEST_F(LookupTable1DTest, UpInterpolation)
 // Тест для значения ниже таблицы
 TEST_F(LookupTable1DTest, DownExtrapolation)
 {
-    table.extrapolate(0.5);
+    table.interpolate(0.5);
     EXPECT_DOUBLE_EQ(table.getOutput(), 5.0);
 }
 
 // Тест для значения выше таблицы
 TEST_F(LookupTable1DTest, UpExtrapolation)
 {
-    table.extrapolate(6.0);
+    table.interpolate(6.0);
     EXPECT_DOUBLE_EQ(table.getOutput(), 60.0);
 }
 
