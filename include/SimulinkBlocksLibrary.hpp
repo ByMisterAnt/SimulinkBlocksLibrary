@@ -17,6 +17,9 @@
 #include "RateLimiter.hpp"
 #include "PID.hpp"
 
+#include "FlightControllers/LateralControl.hpp"
+#include "FlightControllers/LongitudalControl.hpp"
+
 #include "Flightgear/FlightGearReceiver.hpp"
 #include "Flightgear/SendUdp.hpp"
 

@@ -20,7 +20,7 @@ public:
          */
     SendUdp(const std::string &ip = "127.0.0.1", unsigned short port = 5502) :
         socket(io_context, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 0)),
-        server_endpoint(boost::asio::ip::address::from_string(ip), port)
+        server_endpoint(boost::asio::ip::make_address(ip), port)
     {
     }
 
@@ -39,7 +39,7 @@ public:
     }
 
 private:
-    boost::asio::io_service io_context; //!< Служба ввода-вывода для boost::asio
+    boost::asio::io_context io_context; //!< Служба ввода-вывода для boost::asio
     boost::asio::ip::udp::socket socket; //!< UDP-сокет для отправки данных
     boost::asio::ip::udp::endpoint server_endpoint; //!< Конечная точка сервера для отправки данных
 };

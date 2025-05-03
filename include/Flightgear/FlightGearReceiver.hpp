@@ -97,7 +97,7 @@ public:
     }
 
 private:
-    std::thread thread_;
+    std::thread             thread_;
     boost::asio::io_context ioContext;
     udp::socket             socket_;
     udp::endpoint           remoteEndpoint;
