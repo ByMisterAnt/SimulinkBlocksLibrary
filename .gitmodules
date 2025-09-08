@@ -1,3 +1,6 @@
 [submodule "thirdparty/googletest"]
 	path = thirdparty/googletest
 	url = https://github.com/google/googletest.git
+[submodule "examples/FlightGearLogger/external/OpenXLSX"]
+	path = examples/FlightGearLogger/external/OpenXLSX
+	url = https://github.com/troldal/OpenXLSX.git
