@@ -3,6 +3,8 @@
 #include <cstring>
 #include <vector>
 #include <functional>
+#include <atomic>
+#include <csignal>
 #include <OpenXLSX.hpp>
 #include "AsyncExelWriter.h"
 
@@ -20,8 +22,19 @@ struct Parameter {
     ValueGetter getter;
 };
 
+std::atomic_bool shutdown_requested { false };
+
+void signal_handler(int signal) {
+    if (signal == SIGINT) {
+        std::cout << "\nReceived SIGINT (Ctrl+C). Shutting down gracefully...\n";
+        shutdown_requested.store(true, std::memory_order_relaxed);
+    }
+}
+
 int main()
 {
+    std::signal(SIGINT, signal_handler);
+
     SimulinkBlock::FlightGearReceiver<FGNetCtrls> ctrls_receiver(5501);
     SimulinkBlock::FlightGearReceiver<FGNetFDM>   fdm_receiver  (5503);
 
@@ -55,9 +68,10 @@ int main()
         {"cur_time", [&]() { return cur_time; }}
     };
 
-    // Извлекаем имена для заголовков
     std::vector<std::string> headers;
+
     headers.reserve(parameters.size());
+
     for (const auto& p : parameters) {
         headers.push_back(p.name);
     }
@@ -65,8 +79,7 @@ int main()
     try {
         AsyncExcelWriter writer("flight_data.xlsx", headers);
 
-        for (;;) {
-            // Получаем свежие данные
+        while (!shutdown_requested) {
             std::memcpy(&ctrls, &ctrls_receiver.getOutput(), sizeof(FGNetCtrls));
             std::memcpy(&fdm, &fdm_receiver.getOutput(), sizeof(FGNetFDM));
 
@@ -82,10 +95,13 @@ int main()
             std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(dt * 1000)));
         }
 
+        std::cout << "Finalizing Excel file... Please wait.\n";
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
 
+    std::cout << "Application exited cleanly.\n";
     return 0;
 }
